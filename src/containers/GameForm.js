@@ -19,7 +19,8 @@ class GameForm extends React.Component {
         this.state = {
             title: '',
             cover: '',
-            errors: {}
+            errors: {},
+            loading: false
         };
     }
 
@@ -32,7 +33,7 @@ class GameForm extends React.Component {
                 [valName]: e.target.value,
                 errors
             })
-        }else{
+        } else {
             this.setState({
                 [valName]: e.target.value
             })
@@ -46,13 +47,26 @@ class GameForm extends React.Component {
         if (this.state.title === '') errors.title = "Can't be empty";
         if (this.state.cover === '') errors.cover = "Can't be empty";
         this.setState({errors});
+        const isValid = Object.keys(errors).length === 0;
+        if (isValid) {
+            const {title, cover} = this.state;
+            this.setState({loading: true});
+            this.props.actions.saveGame({title, cover}).then(
+                () => { console.log('ok');},
+                (err) => {
+                    console.log(err);
+                    err.response.json().then(({errors}) => this.setState({errors, loading: false}))
+                });
+        }
     };
 
     render() {
         return (
-            <form className="ui form" onSubmit={this._handleSubmit}>
+            <form className={classnames("ui", "form", {loading: this.state.loading})}
+                  onSubmit={this._handleSubmit}>
                 <h1>Add new game</h1>
 
+                {!!this.state.errors.global && <div className="ui negative message"><p>{this.state.errors.global}</p></div>}
                 <div className={classnames("field", {error: !!this.state.errors.title})}>
                     <label htmlFor="title">Title</label>
                     <input type="text" id="title"
@@ -62,7 +76,7 @@ class GameForm extends React.Component {
                     <span>{this.state.errors.title}</span>
                 </div>
 
-                <div className={classnames("field", {error:  !!this.state.errors.cover})}>
+                <div className={classnames("field", {error: !!this.state.errors.cover})}>
                     <label htmlFor="title">Cover URL</label>
                     <input type="text" id="cover"
                            name="cover"

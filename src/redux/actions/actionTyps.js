@@ -3,3 +3,4 @@
  */
 export const fetchGames = 'fetchGames';
 export const setGamesList = 'setGamesList';
+export const saveGame = 'saveGame';
