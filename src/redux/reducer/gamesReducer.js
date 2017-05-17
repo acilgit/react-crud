@@ -9,7 +9,7 @@ let initialState = {
 
 export default function (state = initialState, actions) {
     switch (actions.type) {
-        case types.fetchGames:
+        case types.games:
             return Object.assign({}, state, actions.state);
         default:
             return state;

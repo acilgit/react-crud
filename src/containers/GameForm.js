@@ -4,97 +4,88 @@
 import React from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import {Redirect} from 'react-router-dom';
+
 import classnames from 'classnames';
 
 
 // import PropTypes from 'prop-types';
 
-import actions from '../redux/actions'
+import allActions from '../redux/actions'
+import * as types from '../redux/actions/actionTyps'
 
 class GameForm extends React.Component {
-    // 构造
-    constructor(props) {
-        super(props);
-        // 初始状态
-        this.state = {
-            title: '',
-            cover: '',
-            errors: {},
-            loading: false
-        };
-    }
 
-    _handleChange = (e) => {
+
+
+    _onChange = (e) => {
         let valName = e.target.name;
-        if (!!this.state.errors[valName]) {
-            let errors = Object.assign({}, this.state.errors);
+        let errors = this.props.errors;
+        if (!!this.props.errors[valName]) {
             delete errors[valName];
             this.setState({
                 [valName]: e.target.value,
-                errors
-            })
-        } else {
-            this.setState({
-                [valName]: e.target.value
             })
         }
+        this.props.actions.setProps(types.gameForm, {[valName]: e.target.value, errors})
+
+
     };
 
-    _handleSubmit = (e) => {
+    _onSubmit = (e) => {
         e.preventDefault();
         // validation
         let errors = {};
-        if (this.state.title === '') errors.title = "Can't be empty";
-        if (this.state.cover === '') errors.cover = "Can't be empty";
-        this.setState({errors});
+        const {title, cover, actions} = this.props;
+        if (title === '') errors.title = "Can't be empty";
+        if (cover === '') errors.cover = "Can't be empty";
+        actions.setProps(types.gameForm, {errors});
         const isValid = Object.keys(errors).length === 0;
         if (isValid) {
-            const {title, cover} = this.state;
-            this.setState({loading: true});
-            this.props.actions.saveGame({title, cover}).then(
-                () => { console.log('ok');},
-                (err) => {
-                    console.log(err);
-                    err.response.json().then(({errors}) => this.setState({errors, loading: false}))
-                });
+            this.props.actions.setProps(types.gameForm, {loading: true});
+            this.props.actions.saveGame({title, cover});
         }
     };
 
     render() {
+        let {title, cover, errors, loading, done} = this.props;
+        let Form = (<form className={classnames("ui form", {loading: loading})}
+                          onSubmit={this._onSubmit}>
+            <h1>Add new game</h1>
+
+            {!!errors.global && <div className="ui negative message"><p>{errors.global}</p></div>}
+            <div className={classnames("field", {error: !!errors.title})}>
+                <label htmlFor="title">Title</label>
+                <input type="text" id="title"
+                       name="title"
+                       value={title}
+                       onChange={this._onChange}/>
+                <span>{errors.title}</span>
+            </div>
+
+            <div className={classnames("field", {error: !!errors.cover})}>
+                <label htmlFor="title">Cover URL</label>
+                <input type="text" id="cover"
+                       name="cover"
+                       value={cover}
+                       onChange={this._onChange}/>
+                <span>{errors.cover}</span>
+            </div>
+
+            <div className="filed">
+                {cover !== '' &&
+                <img src={cover} alt="cover" className="ui small bordered image"/>}
+            </div>
+
+            <div className="field">
+                <button className="ui primary button">Save</button>
+            </div>
+
+        </form>);
         return (
-            <form className={classnames("ui", "form", {loading: this.state.loading})}
-                  onSubmit={this._handleSubmit}>
-                <h1>Add new game</h1>
-
-                {!!this.state.errors.global && <div className="ui negative message"><p>{this.state.errors.global}</p></div>}
-                <div className={classnames("field", {error: !!this.state.errors.title})}>
-                    <label htmlFor="title">Title</label>
-                    <input type="text" id="title"
-                           name="title"
-                           value={this.state.title}
-                           onChange={this._handleChange}/>
-                    <span>{this.state.errors.title}</span>
-                </div>
-
-                <div className={classnames("field", {error: !!this.state.errors.cover})}>
-                    <label htmlFor="title">Cover URL</label>
-                    <input type="text" id="cover"
-                           name="cover"
-                           value={this.state.cover}
-                           onChange={this._handleChange}/>
-                    <span>{this.state.errors.cover}</span>
-                </div>
-
-                <div className="filed">
-                    {this.state.cover !== '' &&
-                    <img src={this.state.cover} alt="cover" className="ui small bordered image"/>}
-                </div>
-
-                <div className="field">
-                    <button className="ui primary button">Save</button>
-                </div>
-
-            </form>
+            <dii>
+                {done ? <Redirect to="/games"/> : Form}
+            </dii>
         )
     }
 }
@@ -102,7 +93,7 @@ class GameForm extends React.Component {
 GameForm.propTypes = {};
 
 function dispatcher(dispatch) {
-    return {actions: bindActionCreators(actions, dispatch)}
+    return {actions: bindActionCreators(allActions, dispatch)}
 }
 
 export default connect(state => state.GameForm, dispatcher)(GameForm);

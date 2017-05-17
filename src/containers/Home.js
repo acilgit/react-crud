@@ -4,10 +4,12 @@ import {connect} from 'react-redux';
 
 // import PropTypes from 'prop-types';
 
-import actions from '../redux/actions'
+import actions from '../redux/actions';
+
 
 class Home extends React.Component{
     render() {
+        let {title1, title2, text1,text2} = this.props;
         return (
             <div>
                 Home
