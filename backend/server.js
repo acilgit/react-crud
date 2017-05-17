@@ -8,11 +8,12 @@ const app = express();
 app.use(bodyParser.json());
 
 function validate(data, res) {
+    //let errors = {global:"make a thing to show"};
     let errors = {};
     if (false) {
         res.status(400).json({errors});
         return false;
-    }else{
+    } else {
         return true;
     }
 }
@@ -28,15 +29,17 @@ mongodb.MongoClient.connect(mongodbUrl, function (err, db) {
         if (validate(req.body, res)) {
             let {title, cover} = req.body;
             console.log(req.body);
-            db.collection('games').insert({title, cover}, (err, doc) => {
-                if (err) {
-                    res.status(500).json({errors: {global: 'something went wrong'}});
-                }else {
-                    console.log(doc);
-                    res.json({games: doc.ops[0]});
-                }
-            })
-        }else {
+            setTimeout(()=> {
+                db.collection('games').insert({title, cover}, (err, doc) => {
+                    if (err) {
+                        res.status(500).json({errors: {global: 'something went wrong '}});
+                    } else {
+                        console.log(doc);
+                        res.json(doc.ops[0]);
+                    }
+                })
+            }, 5000)
+        } else {
             console.log('error');
         }
     });

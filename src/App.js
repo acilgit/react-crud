@@ -18,6 +18,7 @@ class App extends Component {
                 <Route path="/" component={Home} exact/>
                 <Route path="/games" exact component={Games}/>
                 <Route path="/games/new" component={GameForm}/>
+                <Route path="/game/:_id" component={GameForm}/>
             </div>
         );
     }

@@ -17,15 +17,21 @@ import * as types from '../redux/actions/actionTyps'
 class GameForm extends React.Component {
 
 
+    componentDidMount() {
+        console.log('didMount GameForm');
+    }
+
+    componentWillUnmount() {
+        console.log('WillUnmount GameForm');
+        let {done, actions} = this.props;
+        done && actions.setProps(types.gameForm, {done: false});
+    }
 
     _onChange = (e) => {
         let valName = e.target.name;
         let errors = this.props.errors;
         if (!!this.props.errors[valName]) {
             delete errors[valName];
-            this.setState({
-                [valName]: e.target.value,
-            })
         }
         this.props.actions.setProps(types.gameForm, {[valName]: e.target.value, errors})
 

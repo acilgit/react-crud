@@ -4,14 +4,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import GameCard from './GameCard';
+
 export default function GamesList({list}) {
     const emptyMessage = (
         <p>There are no games yet in your collection1.</p>
     );
     const gameList = (
-        list.map((game) => {
-            return (<h3>{game.title}</h3>)
-        })
+        <div className="ui four cards">
+            {list.map((game, index) => (
+            <GameCard game={game} key={game._id}/>
+            ))}
+        </div>
     );
     return (
         <div>
