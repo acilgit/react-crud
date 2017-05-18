@@ -44,7 +44,10 @@ let actions = {
                         loading: false
                     })))
                 }
-            )
+            );
+            return new Promise((resolve, reject) =>{
+                resolve(data);
+            });
         }
     },
     fetchGames: function () {

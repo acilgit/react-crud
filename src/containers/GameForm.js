@@ -49,7 +49,7 @@ class GameForm extends React.Component {
         const isValid = Object.keys(errors).length === 0;
         if (isValid) {
             this.props.actions.setProps(types.gameForm, {loading: true});
-            this.props.actions.saveGame({title, cover});
+            this.props.actions.saveGame({title, cover}).then(data => console.log('then ',data));
         }
     };
 
