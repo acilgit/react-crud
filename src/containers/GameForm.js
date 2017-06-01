@@ -6,20 +6,14 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Redirect} from 'react-router-dom';
 
-import classnames from 'classnames';
 
+import PropTypes from 'prop-types';
 
-// import PropTypes from 'prop-types';
-
+import BlankGameForm from '../components/BlankGameForm';
 import allActions from '../redux/actions'
 import * as types from '../redux/actions/actionTyps'
 
 class GameForm extends React.Component {
-
-
-    componentDidMount() {
-        console.log('didMount GameForm');
-    }
 
     componentWillUnmount() {
         console.log('WillUnmount GameForm');
@@ -27,72 +21,29 @@ class GameForm extends React.Component {
         done && actions.setProps(types.gameForm, {done: false});
     }
 
-    _onChange = (e) => {
-        let valName = e.target.name;
-        let errors = this.props.errors;
-        if (!!this.props.errors[valName]) {
-            delete errors[valName];
-        }
-        this.props.actions.setProps(types.gameForm, {[valName]: e.target.value, errors})
+    _onClick = () => {
+        console.log(this.refs.bForm.getWrappedInstance().refs.myForm);
+        this.refs.bForm.getWrappedInstance().refs.myForm.submit();
 
-
-    };
-
-    _onSubmit = (e) => {
-        e.preventDefault();
-        // validation
-        let errors = {};
-        const {title, cover, actions} = this.props;
-        if (title === '') errors.title = "Can't be empty";
-        if (cover === '') errors.cover = "Can't be empty";
-        actions.setProps(types.gameForm, {errors});
-        const isValid = Object.keys(errors).length === 0;
-        if (isValid) {
-            this.props.actions.setProps(types.gameForm, {loading: true});
-            this.props.actions.saveGame({title, cover}).then(data => console.log('then ', data));
-        }
+        // this.refs.myForm.getWrappedInstance().submit();
     };
 
     render() {
-        let {title, cover, errors, loading, done} = this.props;
-        let Form = (
-            <form className={classnames("ui form", {loading: loading})}
-                  onSubmit={this._onSubmit}>
-                <h1>Add new game8</h1>
-
-                {!!errors.global && <div className="ui negative message"><p>{errors.global}</p></div>}
-                <div className={classnames("field", {error: !!errors.title})}>
-                    <label htmlFor="title">Title</label>
-                    <input type="text" id="title"
-                           name="title"
-                           value={title}
-                           onChange={this._onChange}/>
-                    <span>{errors.title}</span>
-                </div>
-
-                <div className={classnames("field", {error: !!errors.cover})}>
-                    <label htmlFor="title">Cover URL</label>
-                    <input type="text" id="cover"
-                           name="cover"
-                           value={cover}
-                           onChange={this._onChange}/>
-                    <span>{errors.cover}</span>
-                </div>
-
-                <div className="filed crop-img">
-                    {cover !== '3' &&
-                    <img style={ {height: "100%", width: "100%"}}
-                         src={"http://i.17173cdn.com/2fhnvk/YWxqaGBf/cms3/BdWHMUblpwmwCAo.jpg"} alt="cover"
-                         className="ui small cover bordered"/>}
-                </div>
-
-                <div className="field">
-                    <button className="ui primary button">Save</button>
-                </div>
-            </form>);
+        let {title, cover, errors, loading, done, actions} = this.props;
         return (
             <dii>
-                {done ? <Redirect to="/games"/> : Form}
+                {done ? <Redirect to="/games"/> :
+                    <div>
+                        <BlankGameForm ref="bForm"
+                            actions={actions}
+                            title={title}
+                            cover={cover}
+                            errors={errors}
+                            loading={loading}/>
+                        <button className="ui button" form="myForm">Saving Outside</button>
+                        <button className="ui button" onClick={this._onClick}>Saving Outside</button>
+                    </div>
+                }
             </dii>
         )
     }

@@ -1,6 +1,9 @@
-import express from 'express';
-import mongodb from 'mongodb';
-import bodyParser from 'body-parser';
+const express = require('express');
+const mongodb = require('mongodb');
+const bodyParser = require('body-parser');
+
+// import mongodb from 'mongodb';
+// import bodyParser from 'body-parser';
 
 
 const mongodbUrl = 'mongodb://localhost/crud';
