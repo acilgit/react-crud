@@ -5,9 +5,11 @@ import {combineReducers} from 'redux';
 import games from './gamesReducer';
 import home from './homeReducer';
 import gameForm from './gameFormReducer';
+import crashLogs from './crashLogsReducer';
 
 export default combineReducers({
     Home: home,
     Games: games,
-    GameForm: gameForm
+    GameForm: gameForm,
+    CrashLogs: crashLogs
 });

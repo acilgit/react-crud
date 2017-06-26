@@ -2,6 +2,8 @@ const express = require('express');
 const mongodb = require('mongodb');
 const bodyParser = require('body-parser');
 
+var request = require('request');
+
 // import mongodb from 'mongodb';
 // import bodyParser from 'body-parser';
 
@@ -45,6 +47,17 @@ mongodb.MongoClient.connect(mongodbUrl, function (err, db) {
         } else {
             console.log('error');
         }
+    });
+
+    app.post('/api/logs', (req, res) => {
+            let {page, pageSize, logType} = req.body;
+            console.log(req.body);
+        request.post('https://www.dsh18.com/appSystemLog/queryPage', {form:req.body}, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                console.log('body', body); // 打印google首页
+                res.json(JSON.parse(body));
+            }
+        });
     });
 
     app.use((req, res) => {

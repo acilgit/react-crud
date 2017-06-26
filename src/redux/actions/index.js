@@ -4,6 +4,23 @@
 import * as types from './actionTyps';
 
 let actions = {
+    /**
+     * 取得崩溃日志
+     * @returns {function(*)}
+     */
+    fetchLogList: function (data) {
+        return (dispatch, getState) => {
+            fetch('/api/logs', {
+                method: 'post',
+                body: JSON.stringify(data),
+                headers: {"Content-Type": "application/json"}})
+                .then(res => res.json())
+                .then(data => dispatch(actions.setLogList(data.content)));
+        }
+    },
+    setLogList: function (crashLogs) {
+        return setAction(types.crashLogs, {list: crashLogs})
+    },
     setProps: function (actionType, state) {
         return setAction(actionType, state);
     },
@@ -45,7 +62,7 @@ let actions = {
                     })))
                 }
             );
-            return new Promise((resolve, reject) =>{
+            return new Promise((resolve, reject) => {
                 resolve(data);
             });
         }

@@ -4,3 +4,4 @@
 export const games = 'games';
 export const home = 'home';
 export const gameForm = 'gameForm';
+export const crashLogs = 'crashLogs';
