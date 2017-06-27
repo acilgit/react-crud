@@ -8,11 +8,10 @@ import PropTypes from 'prop-types';
 
 function Item({item}) {
 
-    console.log('item:', item);
     return (
         <div className="item">
             <div className="content">
-                <div className="header">{item.title}</div>
+                <div className="header">{item.title} --> {item.dateTime}</div>
                 <div className="description">{item.content}</div>
             </div>
         </div>
@@ -25,27 +24,37 @@ function CrashItem({log}) {
 
     console.log('logs:', logs);
 
-        const aList = (logs instanceof Array) ? (
+    let aList, crashText, newLogs;
+    if (logs instanceof Array) {
+        newLogs = logs.filter((log, index) => {
+            if (log.title === '[Crash]') {
+                crashText = log.content;
+            }
+            return log.title !== '[Crash]'
+        });
+        aList = (
             <div className="ui relaxed divided list">
-                {logs.map((item, index) => (
+                {newLogs.map((item, index) => (
                     <Item item={item} key={index}/>
                 ))}
             </div>
-        ) : (<div>{JSON.stringify(logs)}</div>);
-
-    console.log('aList:', aList.title);
+        )
+    } else {
+        crashText = JSON.stringify(logs);
+        aList = (<div></div>)
+    }
 
     return (
         <div className="ui">
-            <table className="ui olive table">
+            <table className="ui inverted table">
                 <thead>
                 <tr>
-                    <th>版本</th>
+                    <th>崩溃操作 </th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td></td>
+                    <td>{crashText}</td>
                 </tr>
                 </tbody>
             </table>

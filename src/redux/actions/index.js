@@ -15,11 +15,8 @@ let actions = {
                 body: JSON.stringify(data),
                 headers: {"Content-Type": "application/json"}})
                 .then(res => res.json())
-                .then(data => dispatch(actions.setLogList(data.content)));
+                .then(r => dispatch(setAction(types.crashLogs, {list: r.content, page: data.page})));
         }
-    },
-    setLogList: function (crashLogs) {
-        return setAction(types.crashLogs, {list: crashLogs})
     },
     setProps: function (actionType, state) {
         return setAction(actionType, state);

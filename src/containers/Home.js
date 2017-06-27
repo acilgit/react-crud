@@ -13,7 +13,7 @@ class Home extends React.Component {
         return (
             <div>
 
-                 Home    : {JSON.stringify(this.jumpBrowserType())}
+                 Home: {JSON.stringify(this.jumpBrowserType())}
             </div>
         );
     }

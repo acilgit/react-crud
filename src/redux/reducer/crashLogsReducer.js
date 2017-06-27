@@ -5,7 +5,7 @@ import * as types from '../actions/actionTyps';
 
 let initialState = {
     page: 1,
-    pageSize: 10,
+    pageSize: 20,
     list: []
 };
 
