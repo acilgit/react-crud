@@ -18,53 +18,114 @@ function Item({item}) {
     )
 }
 
-function CrashItem({log}) {
+export default class CrashItem extends React.Component {
 
-    let logs = JSON.parse(log.logContent);
-
-    console.log('logs:', logs);
-
-    let aList, crashText, newLogs;
-    if (logs instanceof Array) {
-        newLogs = logs.filter((log, index) => {
-            if (log.title === '[Crash]') {
-                crashText = log.content;
-            }
-            return log.title !== '[Crash]'
-        });
-        aList = (
-            <div className="ui relaxed divided list">
-                {newLogs.map((item, index) => (
-                    <Item item={item} key={index}/>
-                ))}
-            </div>
-        )
-    } else {
-        crashText = JSON.stringify(logs);
-        aList = (<div></div>)
+    // 构造
+    constructor(props) {
+        super(props);
+        // 初始状态
+        this.state = {
+            showList: false
+        };
     }
 
-    return (
-        <div className="ui">
-            <table className="ui inverted table">
-                <thead>
-                <tr>
-                    <th>崩溃操作 </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>{crashText}</td>
-                </tr>
-                </tbody>
-            </table>
-            { aList}
-        </div>
-    )
+    render() {
+
+        let {log} = this.props;
+
+        let logs = JSON.parse(log.logContent);
+
+        console.log('logs:', logs);
+
+        let aList, newLogs, info, dateTime = {crashText: '  '};
+        if (logs instanceof Array) {
+            newLogs = logs.filter((log, index) => {
+                if (log.title === '[Crash]') {
+                    info = JSON.parse(log.content);
+                    dateTime = log.dateTime;
+                }
+                return log.title !== '[Crash]'
+            });
+            aList = (
+                <div className="ui relaxed divided list">
+                    {newLogs.map((item, index) => (
+                        <Item item={item} key={index}/>
+                    ))}
+                </div>
+            )
+        } else {
+            info.errorMsg = JSON.stringify(logs);
+            aList = (<div></div>)
+        }
+
+        return (
+            <div>
+                {/*<div className="title">*/}
+                    <table className="ui inverted table">
+                        <thead>
+                        <tr>
+                            <th>序号：{log.index} </th>
+                            <th>时间：{dateTime} </th>
+                            <th>用户：{info.user} </th>
+                        </tr>
+                        <tr>
+                            <th>机型：{info.manufacturer} - {info.model}</th>
+                            <th>SDK：{info.sdk} ({info.release})</th>
+                            <th>版本：{info.versionName}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td colSpan="3">{info.errorMsg}</td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr onClick={() => {
+                            this.setState({showList: !this.state.showList})
+                        }}>
+                            <th className="center aligned" colSpan="3">
+                                <a >{this.state.showList ? '隐藏' : '查看'}Log日志详情</a>
+                            </th>
+                        </tr>
+                        </tfoot>
+                    </table>
+               {/* </div>*/}
+                {/*<div className="content">*/}
+                    {aList}
+               {/* </div>*/}
+            </div>
+        )
+    }
 }
+
+
+/* return (
+ crashText.indexOf('onKeyDown') >= 0 || crashText.indexOf('XML file line #31') >= 0 ?
+ (<table className="ui inverted green table">
+ <thead>
+ <tr>
+ <th>崩溃操作 onKeyDown XML file line #31</th>
+ </tr>
+ </thead>
+ </table>)
+ :(<div className="ui">
+ <table className="ui inverted table">
+ <thead>
+ <tr>
+ <th>崩溃操作</th>
+ <th>{key}</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>{crashText}</td>
+ </tr>
+ </tbody>
+ </table>
+ { aList}
+ </div>)
+ )*/
 
 CrashItem.propTypes = {
     log: PropTypes.object.isRequired
 };
-
-export default CrashItem
