@@ -3,6 +3,9 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import $ from 'jquery';
+import faker from 'faker';
+
+import ui, {Checkbox, Accordion, AccordionTitle, AccordionContent} from 'semantic-ui-react';
 
 
 import * as types from '../redux/actions/actionTyps';
@@ -30,9 +33,16 @@ class CrashLogs extends React.Component {
     _filterOnChange = (e) => {
         this.props.actions.setProps(types.crashLogs, {filterText: e.target.value})
     };
+    _checkOnChange = (e) => {
+        this.props.actions.setProps(types.crashLogs, {containFilterText: !this.props.containFilterText})
+    };
 
     render() {
-        let {list, page, filterText} = this.props;
+        let {list, page, filterText, containFilterText} = this.props;
+        let aList = list.filter((log) => {
+            let filter = (filterText != '' ? (containFilterText ? log.logContent.indexOf(filterText) > -1 : log.logContent.indexOf(filterText) == -1 ): true);
+            return log.logContent.indexOf('105030') > -1 && filter;
+        });
         const pageController = (
             <div className="ui right floated pagination menu">
                 <a className="icon item" onClick={this._onClick.bind(this, -1)}>
@@ -45,37 +55,32 @@ class CrashLogs extends React.Component {
             </div>);
         return (
             <div>
-                <div className="ui accordion">
-                    <div className="active title"><i className="dropdown icon"></i> What is a dog?</div>
-                    <div className="active content">
-                        <p>A dog is a type of domesticated animal.Known for its loyalty and faithfulness, it can be
-                            found as a welcome guest in many households across the world.</p>
-                    </div>
-                    <div className="title"><i className="dropdown icon"></i> What kinds of dogs are there?</div>
-                    <div className="content">
-                        <p>There are many breeds o f dogs. r eturn Each breed var ies in size an d temperament. Owners
-                            often
-                            select a breed of dog that they find to be compatible with their own lifestyle and
-                            des  ires from a companion.</p>
-                    </div>
-                    <div className="title"><i className="dropdown icon"></i> How do you acquire a dog?</div>
-                    <div className="content">
-                        <p>Three common ways for a prospective owner to acquire a dog is from pet shops, private
-                            owners, or  shelters.</p>
-                        <p>A pet shop may be  the most convenient way to buy a dog.Buying a dog from a private owner
-                            allows you to assess the pedigree and upbringing of your dog before choosing to take it
-                            home. Lastly, finding your dog from a   shelter helps give a good home to a dog who may
-                            not find one so readily.</p>
-                    </div>
-                </div>
+                <Accordion color="red" defaultActiveIndex={1} inverted={false}>
+                    <AccordionTitle><i className="dropdown icon"></i>{faker.lorem.sentence()}</AccordionTitle>
+                    <AccordionContent >
+                        <p>{faker.lorem.paragraph()}</p>
+                    </AccordionContent>
+                    <AccordionTitle ><i className="dropdown icon"></i>{faker.lorem.sentence()}</AccordionTitle>
+                    <AccordionContent>
+                        <p>{faker.address.country()}</p>
+                    </AccordionContent>
+                    <AccordionTitle ><i className="dropdown icon"></i>{faker.lorem.sentence()}</AccordionTitle>
+                    <AccordionContent>
+                        <p>{faker.name.jobTitle()}</p>
+                    </AccordionContent>
+                </Accordion>
 
                 <div>
                     <div name="inputFilter" className="ui input">
                         <input type="text" onChange={this._filterOnChange}/>
                     </div>
+                    <Checkbox toggle={true} checked={containFilterText} onChange={this._checkOnChange} label={containFilterText ? '包含字符':'排 除 字 符'}>
+                       {/* <input type="checkbox" checked={!containFilterText} onChange={this._checkOnChange}/>
+                        <lable>包含字符</lable>*/}
+                    </Checkbox>
                 </div>
                 {pageController}
-                <LogList list={list} filterText={filterText}/>
+                <LogList list={aList}/>
                 {pageController}
             </div>
         )

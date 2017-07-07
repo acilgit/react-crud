@@ -7,6 +7,7 @@ let initialState = {
     page: 1,
     pageSize: 50,
     filterText: '',
+    containFilterText: true,
     list: []
 };
 

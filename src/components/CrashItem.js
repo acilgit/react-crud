@@ -84,14 +84,14 @@ export default class CrashItem extends React.Component {
                             this.setState({showList: !this.state.showList})
                         }}>
                             <th className="center aligned" colSpan="3">
-                                <a >{this.state.showList ? '隐藏' : '查看'}Log日志详情</a>
+                                <a >{this.state.showList ? '隐藏' : '查看'}Log日志详 情</a>
                             </th>
                         </tr>
                         </tfoot>
                     </table>
                {/* </div>*/}
                 {/*<div className="content">*/}
-                    {aList}
+                    {this.state.showList ? aList : null}
                {/* </div>*/}
             </div>
         )
